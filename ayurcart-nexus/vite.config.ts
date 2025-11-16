@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
 
-  // ⭐ VERY IMPORTANT FOR GITHUB PAGES ⭐
-  base: "/Aagna-Naturals/",
+  // ⭐ FIX: Localhost = "/", Production = "/Aagna-Naturals/" ⭐
+  base: mode === "production" ? "/Aagna-Naturals/" : "/",
 
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
 
