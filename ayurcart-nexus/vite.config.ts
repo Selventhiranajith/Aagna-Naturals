@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
 
-  // ⭐ FIX: Localhost = "/", Production = "/Aagna-Naturals/" ⭐
-  base: mode === "production" ? "/Aagna-Naturals/" : "/",
+  // ⭐ Netlify FIX: Always use relative path ⭐
+  base: "./",
 
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
 

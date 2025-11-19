@@ -13,8 +13,8 @@ import { z } from "zod";
 const signUpSchema = z.object({
   name: z.string().trim().nonempty({ message: "Name is required" }).max(100),
   email: z.string().trim().email({ message: "Invalid email" }).max(255),
-  phone: z.string().trim().max(20),
-  address: z.string().trim().max(500),
+  phone: z.string().trim().nonempty({ message: "Phone is required" }).max(20),
+  address: z.string().trim().nonempty({ message: "Address is required" }).max(500),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }).max(100),
 });
 
@@ -184,6 +184,7 @@ const Auth = () => {
                     placeholder="Enter Your Phone Number"
                     value={signUpData.phone}
                     onChange={(e) => setSignUpData({ ...signUpData, phone: e.target.value })}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -194,6 +195,7 @@ const Auth = () => {
                     placeholder="Enter Your Address"
                     value={signUpData.address}
                     onChange={(e) => setSignUpData({ ...signUpData, address: e.target.value })}
+                    required
                   />
                 </div>
                 <div className="space-y-2">

@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
-import { ShoppingCart, Leaf } from "lucide-react";
+import { ShoppingCart, Leaf, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,15 @@ import { useAuth } from "@/contexts/AuthContext";
 const Products = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  // WhatsApp Sri Lanka number
+  const WHATSAPP_NUMBER = "94741167143";
+
+  const handleWhatsApp = (e: React.MouseEvent) => {
+    e.stopPropagation(); // prevent product navigation
+    const url = `https://wa.me/${WHATSAPP_NUMBER}`;
+    window.open(url, "_blank");
+  };
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
@@ -35,13 +44,16 @@ const Products = () => {
 
     const { error } = await supabase
       .from("cart_items")
-      .upsert({
-        user_id: user.id,
-        product_id: productId,
-        quantity: 1,
-      }, {
-        onConflict: "user_id,product_id",
-      });
+      .upsert(
+        {
+          user_id: user.id,
+          product_id: productId,
+          quantity: 1,
+        },
+        {
+          onConflict: "user_id,product_id",
+        }
+      );
 
     if (error) {
       toast.error("Failed to add to cart");
@@ -77,8 +89,8 @@ const Products = () => {
         ) : products && products.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
-              <Card 
-                key={product.id} 
+              <Card
+                key={product.id}
                 className="overflow-hidden hover:shadow-[var(--shadow-card)] transition-shadow cursor-pointer"
                 onClick={() => navigate(`/products/${product.id}`)}
               >
@@ -109,9 +121,11 @@ const Products = () => {
                     </span>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button 
-                    className="w-full" 
+
+                {/* Updated CardFooter with Add to Cart + Message Button */}
+                <CardFooter className="flex gap-2">
+                  <Button
+                    className="w-full"
                     onClick={(e) => {
                       e.stopPropagation();
                       addToCart(product.id);
@@ -120,6 +134,14 @@ const Products = () => {
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
                     {product.stock_count === 0 ? "Out of Stock" : "Add to Cart"}
+                  </Button>
+
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center"
+                    onClick={handleWhatsApp}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Message
                   </Button>
                 </CardFooter>
               </Card>

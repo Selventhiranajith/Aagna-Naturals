@@ -14,6 +14,9 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
 
+  const ADMIN_WHATSAPP = "94741167143"; // Admin WhatsApp Number
+
+  // Fetch cart items
   const { data: cartItems } = useQuery({
     queryKey: ["cart", user?.id],
     queryFn: async () => {
@@ -32,6 +35,7 @@ const Checkout = () => {
     enabled: !!user,
   });
 
+  // Fetch profile details
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
@@ -48,6 +52,7 @@ const Checkout = () => {
     enabled: !!user,
   });
 
+  // Create order mutation
   const createOrderMutation = useMutation({
     mutationFn: async () => {
       if (!user || !cartItems) throw new Error("Invalid state");
@@ -63,7 +68,7 @@ const Checkout = () => {
         .insert({
           user_id: user.id,
           total_amount: total,
-          payment_status: "completed", // Simulated payment
+          payment_status: "completed",
           delivery_status: "processing",
         })
         .select()
@@ -94,21 +99,46 @@ const Checkout = () => {
 
       if (clearError) throw clearError;
 
-      return order.id;
+      return total;
     },
-    onSuccess: (orderId) => {
+
+    onSuccess: (total) => {
       toast.success("Order placed successfully!");
-      navigate("/dashboard");
+
+      const message =
+        `🛒 *New Order Received*\n\n` +
+        `*Customer Details*\n` +
+        `Name: ${profile?.name || "N/A"}\n` +
+        `Phone: ${profile?.phone || "N/A"}\n` +
+        `Address: ${profile?.address || "N/A"}\n\n` +
+        `*Order Items*\n` +
+        cartItems
+          .map(
+            (item) =>
+              `- ${item.products?.name || "Item"} (x${
+                item.quantity || 1
+              })`
+          )
+          .join("\n") +
+        `\n\n*Total Amount:* $${total.toFixed(2)}\n\n` +
+        `Please confirm the order.`;
+
+      // WhatsApp Redirect
+      const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(
+        message
+      )}`;
+
+      window.location.href = url;
     },
+
     onError: () => {
       toast.error("Failed to place order");
       setProcessing(false);
     },
   });
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     setProcessing(true);
-    // Simulate payment processing
     setTimeout(() => {
       createOrderMutation.mutate();
     }, 1500);
@@ -119,11 +149,13 @@ const Checkout = () => {
     0
   ) || 0;
 
+  // Redirect if not logged in
   if (!user) {
     navigate("/auth");
     return null;
   }
 
+  // Redirect if no items
   if (!cartItems || cartItems.length === 0) {
     navigate("/cart");
     return null;
@@ -175,37 +207,35 @@ const Checkout = () => {
               <CardHeader>
                 <CardTitle>Payment Summary</CardTitle>
               </CardHeader>
+
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-medium">${total.toFixed(2)}</span>
                   </div>
+
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Shipping</span>
                     <span className="font-medium">Free</span>
                   </div>
+
                   <div className="h-px bg-border my-4" />
+
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
                     <span className="text-primary">${total.toFixed(2)}</span>
                   </div>
                 </div>
 
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground text-center">
-                    Simulated payment - Click below to complete order
-                  </p>
-                </div>
-
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   size="lg"
                   onClick={handleCheckout}
                   disabled={processing}
                 >
                   {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {processing ? "Processing..." : "Complete Order"}
+                  {processing ? "Processing..." : "Send Order"}
                 </Button>
               </CardContent>
             </Card>
