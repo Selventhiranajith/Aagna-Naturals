@@ -40,18 +40,22 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-  <img
-    src="/1000083116.jpg"
-    alt="Aagna Naturals Logo"
-    className="h-8 w-8 rounded-full object-cover"
-  />
-  <span className="text-xl font-bold text-foreground">Aagna Naturals</span>
-</Link>
+            <img
+              src="/1000083116.jpg"
+              alt="Aagna Naturals Logo"
+              className="h-8 w-8 rounded-full object-cover"
+            />
+            <span className="text-xl font-bold text-foreground">Aagna Naturals</span>
+          </Link>
 
 
           <div className="flex items-center gap-4">
             <Link to="/products">
               <Button variant="ghost">Products</Button>
+            </Link>
+
+             <Link to="/blog">
+              <Button variant="ghost">Blog</Button>
             </Link>
 
             {user ? (

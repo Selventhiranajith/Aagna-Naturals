@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import { OrdersManagement } from "@/components/admin/OrdersManagement";
 import { UsersManagement } from "@/components/admin/UsersManagement";
+import { BlogsManagement } from "@/components/admin/BlogsManagement";
 import { toast } from "sonner";
 
 const Admin = () => {
@@ -63,10 +64,11 @@ const Admin = () => {
         <h1 className="text-4xl font-bold mb-8">Admin Panel</h1>
 
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="blogs">Blogs</TabsTrigger>
           </TabsList>
 
           <TabsContent value="products" className="mt-6">
@@ -79,6 +81,10 @@ const Admin = () => {
 
           <TabsContent value="users" className="mt-6">
             <UsersManagement />
+          </TabsContent>
+
+          <TabsContent value="blogs" className="mt-6">
+            <BlogsManagement />
           </TabsContent>
         </Tabs>
       </div>

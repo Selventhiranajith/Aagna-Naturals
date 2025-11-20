@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+     blogs: {
+  Row: {
+    id: string
+    title: string
+    content: string
+    excerpt: string | null
+    author_id: string
+    image_url: string | null
+    media: Json | null
+    is_published: boolean | null
+    created_at: string | null
+    updated_at: string | null
+  }
+  Insert: {
+    id?: string
+    title: string
+    content: string
+    excerpt?: string | null
+    author_id: string
+    image_url?: string | null
+    media?: Json | null
+    is_published?: boolean | null
+    created_at?: string | null
+    updated_at?: string | null
+  }
+  Update: {
+    id?: string
+    title?: string
+    content?: string
+    excerpt?: string | null
+    author_id?: string
+    image_url?: string | null
+    media?: Json | null
+    is_published?: boolean | null
+    created_at?: string | null
+    updated_at?: string | null
+  }
+  Relationships: [
+    {
+      foreignKeyName: "blogs_author_id_fkey"
+      columns: ["author_id"]
+      isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+  ]
+}
+
       cart_items: {
         Row: {
           created_at: string | null
